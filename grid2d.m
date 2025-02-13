@@ -3,15 +3,15 @@ classdef grid2d
     %   Detailed explanation goes here
 
     properties
-        offset_stdpts (1,2) double = [nan nan]
-        a1_stdpts (1,2) double = [nan nan]
-        a2_stdpts (1,2) double = [nan nan]
-        sz_stdpts (1,2) double = [nan nan]
+        offset_stdpts (1,2) double = [nan nan] %[o-p]_pC
+        a1_stdpts (1,2) double = [nan nan] % [a_1]_pC
+        a2_stdpts (1,2) double = [nan nan] % [a_1]_pC
+        sz_stdpts (1,2) double = [nan nan] %
         clr_a1 (1,3) double = [1,0,0]
         clr_a2 (1,3) double = [0,1,0]
     end
     properties (Dependent)
-        augMat (3,3) table
+        augMat (3,3) table % [I]_pC^oB
         baryBss (2,3) table
     end
 
@@ -25,7 +25,7 @@ classdef grid2d
             v = array2table(v,"RowNames",{'x','y'} ,"VariableNames",{'p0(=o)','p1(=o+v1)','p2(=o+v2)'});
         end
         function lattice_coords_in = fnd_Lattice_in_window(obj)
-            I_oB__pC = table2array(obj.augMat) ;
+            I_oB__pC = inv(table2array(obj.augMat)) ;
             sz = obj.sz_stdpts;
             rect = [0 sz(1) sz(1) 0;
                 0 0 sz(2) sz(2)]
