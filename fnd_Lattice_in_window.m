@@ -31,7 +31,7 @@ liwCan_pC = affine_augCal(I_pC__oB,liwCan_oB);
 
 
 % 직사각형 내부 격자점 확인
-in_rect = inpolygon(liwCan_pC(1,:)', liwCan_pC(2,:)', rect_pC(1, :), rect_pC(2, :))
+in_rect = inpolygon(liwCan_pC(1,:)', liwCan_pC(2,:)', rect_pC(1, :), rect_pC(2, :));
 
 % 내부 점의 (n1, n2) 정수쌍 반환
 latinWin_oB = [n1(in_rect), n2(in_rect)];

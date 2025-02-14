@@ -18,7 +18,8 @@ classdef grid2d
         inGrid table
     end
     properties (Dependent,Hidden)
-        rect (2,4) double        
+        rect (2,4) double
+        is_fully_defined (1,1) boolean
     end
     
     methods % about dependent properties
@@ -35,21 +36,23 @@ classdef grid2d
             v = [0 sz(1) sz(1) 0;
                 0 0 sz(2) sz(2)];
         end
-        function v = get.inLatt(obj)
-            isnan =  any(isnan(table2array(obj.augMat)),"all");
-            if isnan
-            else
+        function v = get.inLatt(obj)            
+            if obj.is_fully_defined
                 I_oB__pC = inv(table2array(obj.augMat)) ;
-            v =  fnd_Lattice_in_window(I_oB__pC,obj.rect);
+                v =  fnd_Lattice_in_window(I_oB__pC,obj.rect);
+                'reCalculated'
             end            
         end
-        function v = get.inGrid(obj)
-            isnan =  any(isnan(table2array(obj.augMat)),"all");
-            if isnan
-            else
+        function v = get.inGrid(obj.augMat)
+            if obj.is_fully_defined
                 I_oB__pC = inv(table2array(obj.augMat)) ;
-                tbl_line = fnd_Grid_in_window(I_oB__pC,obj.rect);
+                v = fnd_Grid_in_window(I_oB__pC,obj.rect);
             end            
+        end
+        function v = get.is_fully_defined(obj)
+            is_affine_defined =  ~any(isnan(table2array(obj.augMat)),"all");
+            is_window_defined = ~any(isnan(obj.sz_stdpts),"all");
+            v = is_affine_defined & is_window_defined;
         end
     end   
     methods % calculate graphic object in Window
