@@ -14,8 +14,8 @@ classdef grid2d
     properties (Dependent)
         augMat (3,3) table % [I]_pC^oB
         baryBss (2,3) table
-        inLatt table
-        inGrid table
+        inLatt table 
+        inGrid table 
     end
     properties (Dependent,Hidden)
         rect (2,4) double
