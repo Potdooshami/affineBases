@@ -38,12 +38,18 @@ classdef grid2d
         end
         function v = get.inLatt(obj)            
             if obj.is_fully_defined
-                I_oB__pC = inv(table2array(obj.augMat)) ;
-                v =  fnd_Lattice_in_window(I_oB__pC,obj.rect);
+                I_pC__oB = table2array(obj.augMat);
+                I_oB__pC = inv(I_pC__oB) ;
+                v_oB =  transpose(fnd_Lattice_in_window(I_oB__pC,obj.rect));
+                v_pC = affine_augCal(I_pC__oB,  v_oB);
+                v = table();
+                v.Lattice =v_oB';
+                v.pixel = v_pC';
+                % v = [ ];
                 'reCalculated'
             end            
         end
-        function v = get.inGrid(obj.augMat)
+        function v = get.inGrid(obj)
             if obj.is_fully_defined
                 I_oB__pC = inv(table2array(obj.augMat)) ;
                 v = fnd_Grid_in_window(I_oB__pC,obj.rect);
@@ -71,8 +77,31 @@ classdef grid2d
             hold off
         end
         function pLatticeWin(obj)
+            xy = obj.inLatt.pixel
+            plot(xy(:, 1), xy(:, 2), 'k.', 'MarkerSize', 8, 'LineWidth', 1.5);
+
         end
         function pGridlineWin(obj)
+            for ibss = 1:2
+                % iSegNow = tbl_line.ind_bss == ibss;
+                iSegNow = obj.inGrid.ind_bss == ibss;
+                tbl_lineNow  = obj.inGrid(iSegNow,:);
+                grdX1d =  tbl_lineNow.grdX;
+                grdX1d(:,3) =  nan;
+                grdX1d = grdX1d';
+                grdX1d = grdX1d(:);
+                grdY1d =  tbl_lineNow.grdY;
+                grdY1d(:,3) =  nan;
+                grdY1d = grdY1d';
+                grdY1d = grdY1d(:);
+                grd1d(ibss).X = grdX1d;
+                grd1d(ibss).Y = grdY1d;
+            end
+            clrs = [obj.clr_a1; obj.clr_a2];
+            for ibss = 1:2
+                plot(grd1d(ibss).X,grd1d(ibss).Y,'Color',clrs(ibss,:))
+            end
+
         end
 
     end
