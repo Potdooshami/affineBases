@@ -79,7 +79,6 @@ classdef grid2d
         function pLatticeWin(obj)
             xy = obj.inLatt.pixel
             plot(xy(:, 1), xy(:, 2), 'k.', 'MarkerSize', 8, 'LineWidth', 1.5);
-
         end
         function pGridlineWin(obj)
             for ibss = 1:2
@@ -103,6 +102,32 @@ classdef grid2d
             end
 
         end
-
+        
     end
+    methods % return other instance
+        function newInstance = latticeFineTune(obj,indLatt,smallShift)            
+            arguments
+                indLatt (2,3) double 
+                smallShift (2,3) double 
+            end            
+            I_old = table2array(obj.augMat); % I_pC__oB
+            dlt = [smallShift;0 0 0]; % [[dlta dltb dltc]_pC;0 0 0]
+            P = [indLatt;1 1 1]; % [Pa, Pb, Pc]_oB
+            I_new = (I_old*P + dlt)*inv(P);
+            newInstance = grid2d(I_new,obj.sz);
+        end
+    end
+    methods % constructor
+        function obj = grid2d(I_pC__oB,sz)
+            arguments
+                I_pC__oB (3,3) double
+                sz (1,2) double
+            end
+            obj.a1_stdpts = I_pC__oB(1:2,1)';
+            obj.a2_stdpts = I_pC__oB(1:2,2)';
+            obj.offset_stdpts = I_pC__oB(1:2,3)';
+            obj.sz_stdpts = sz;            
+        end
+    end
+    
 end
