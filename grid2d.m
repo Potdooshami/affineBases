@@ -61,7 +61,13 @@ classdef grid2d
             v = is_affine_defined & is_window_defined;
         end
     end   
-    methods % calculate graphic object in Window
+    methods % calculate something
+        function pC = oB2pC(obj,oB)
+            pC = affine_augCal(table2array(obj.augMat),oB);
+        end
+        function oB = pC2oB(obj,pC)
+            oB = affine_augCal(inv(table2array(obj.augMat)),pC)
+        end
     end
     methods % plot graphic object
         function pWindow(obj)
@@ -76,9 +82,15 @@ classdef grid2d
             quiver(O(1), O(2), b2(1), b2(2), 0,'Color' ,obj.clr_a2, 'LineWidth', 2, 'MaxHeadSize', 0.5); % a2 벡터
             hold off
         end
-        function pLatticeWin(obj)
+        function p = pLatticeWin(obj)
             xy = obj.inLatt.pixel
-            plot(xy(:, 1), xy(:, 2), 'k.', 'MarkerSize', 8, 'LineWidth', 1.5);
+            z1 = obj.inLatt.Lattice(:,1);
+            z2 =  obj.inLatt.Lattice(:,2);
+            p = plot(xy(:, 1), xy(:, 2), 'k.', 'MarkerSize', 8, 'LineWidth', 1.5);
+            rowZ1 = dataTipTextRow("z1",z1);
+            rowZ2 = dataTipTextRow("z2",z2);
+            p.DataTipTemplate.DataTipRows(end+1) = rowZ1;
+            p.DataTipTemplate.DataTipRows(end+1) = rowZ2;
         end
         function pGridlineWin(obj)
             for ibss = 1:2
@@ -107,6 +119,7 @@ classdef grid2d
     methods % return other instance
         function newInstance = latticeFineTune(obj,indLatt,smallShift)            
             arguments
+                obj
                 indLatt (2,3) double 
                 smallShift (2,3) double 
             end            
@@ -118,8 +131,9 @@ classdef grid2d
         end
     end
     methods % constructor
-        function obj = grid2d(I_pC__oB,sz)
+        function obj = oneLine(obj,I_pC__oB,sz) % define class in one line
             arguments
+                obj
                 I_pC__oB (3,3) double
                 sz (1,2) double
             end
@@ -131,3 +145,6 @@ classdef grid2d
     end
     
 end
+%Custom data tip
+%(2,1) (55,46) (4,21)
+%fine Tuning Test
