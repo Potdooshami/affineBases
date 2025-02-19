@@ -127,7 +127,7 @@ classdef grid2d
             dlt = [smallShift;0 0 0]; % [[dlta dltb dltc]_pC;0 0 0]
             P = [indLatt;1 1 1]; % [Pa, Pb, Pc]_oB
             I_new = (I_old*P + dlt)*inv(P);
-            newInstance = grid2d(I_new,obj.sz);
+            newInstance = grid2d().oneLine(I_new,obj.sz_stdpts);
         end
     end
     methods % constructor
@@ -145,6 +145,3 @@ classdef grid2d
     end
     
 end
-%Custom data tip
-%(2,1) (55,46) (4,21)
-%fine Tuning Test
